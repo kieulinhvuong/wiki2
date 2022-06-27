@@ -6,10 +6,12 @@ from django.urls import reverse
 from django import forms
 import random 
 
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
+
 
 def subPage(request, entry):
     markdowner = Markdown()
@@ -20,10 +22,8 @@ def subPage(request, entry):
     })
     else:
         return render(request, "encyclopedia/errorpage.html")
-
-class searchForm(forms.Form):
-    q = forms.CharField()
     
+
 def search(request):
     query = request.GET.get('q')
     keyword = util.get_entry(query)
@@ -40,9 +40,11 @@ def search(request):
             "result": result
         })
 
+
 class newpageForm(forms.Form):
     title = forms.CharField(label='Title', widget=forms.Textarea)
     content = forms.CharField(label='Content', widget=forms.Textarea)
+
 
 def newpage(request):
     if request.method == "GET":
@@ -66,6 +68,7 @@ def newpage(request):
                 return render(request, "encyclopedia/entrypage.html", {
                     "entry": result
                 })
+
 
 
 def randompage(request):
