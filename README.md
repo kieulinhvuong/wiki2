@@ -1,8 +1,8 @@
-##Wiki
+## Wiki
 
 Design a Wikipedia-like online encyclopedia.
 
-##Specification
+## Specification
 
 For full detail description of CS50 Wiki, visit: (https://cs50.harvard.edu/web/2020/projects/1/wiki/) 
 
