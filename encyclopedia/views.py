@@ -12,13 +12,14 @@ def index(request):
         "entries": util.list_entries()
     })
 
+markdowner = Markdown()
 
-def subPage(request, entry):
-    markdowner = Markdown()
-    content = util.get_entry(entry)
+def subPage(request, title):
+    content = util.get_entry(title)
     if (content):
         return render(request, "encyclopedia/entrypage.html", {
-        "entry": markdowner.convert(content)
+            "title": title,
+            "entry": markdowner.convert(content)
     })
     else:
         return render(request, "encyclopedia/errorpage.html")
@@ -42,7 +43,7 @@ def search(request):
 
 
 class newpageForm(forms.Form):
-    title = forms.CharField(label='Title', widget=forms.Textarea)
+    title = forms.CharField(label='Title')
     content = forms.CharField(label='Content', widget=forms.Textarea)
 
 
@@ -66,7 +67,8 @@ def newpage(request):
                 util.save_entry(title, content)
                 result = util.get_entry(title)
                 return render(request, "encyclopedia/entrypage.html", {
-                    "entry": result
+                    "title": title,
+                    "entry": markdowner.convert(result)
                 })
 
 
@@ -75,5 +77,21 @@ def randompage(request):
     keyword = random.choice(util.list_entries())
     result = util.get_entry(keyword)
     return render(request, "encyclopedia/entrypage.html", {
-        "entry": result
+        "title": keyword,
+        "entry": markdowner.convert(result)
     })
+
+
+def edit(request):
+    if request.method == "GET":
+        newtitle = request.GET["title"]
+        newcontent = util.get_entry(newtitle)
+        return render(request, "encyclopedia/edit.html", {
+            "newtitle": newtitle,
+            "newcontent": newcontent
+        })
+    else:
+        newtitle = request.POST["newtitle"]
+        newcontent = request.POST["newcontent"]
+        util.save_entry(newtitle, newcontent)
+        return HttpResponseRedirect(reverse('entrypage', kwargs={"title": newtitle}))
